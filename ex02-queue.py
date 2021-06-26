@@ -1,53 +1,75 @@
 
 
-class Stack:
+class Queue:
     def __init__(self, max_length: int=8):
-        self.__max_length = max_length - 1
-        self.__pointer = -1
-        self.__stack = max_length*[0]
+        self.__max_length = max_length
+        self.__head = 0
+        self.__tail = 0
+        self.__count_elements = 0
+        self.__queue = (max_length)*[0]
 
     @property
-    def stack(self) -> list:
-        return self.__stack
+    def queue(self) -> list:
+        return self.__queue
 
-    def push(self, data: int):
-        if self.__pointer < self.__max_length:
-            self.__pointer += 1
-            self.__stack[self.__pointer] = data
+    def enqueue(self, data: int):
+        # entra na fila
+        if self.__count_elements < self.__max_length:
+            self.__count_elements += 1
+            self.__queue[self.__tail] = data
+            self.__tail = (self.__tail + 1) % self.__max_length
         else:
-            print("full stack")
-    
-    def top(self):
-        if self.__pointer >= 0:
-            return self.__stack[self.__pointer]
+            print("full queue")
+
+    def dequeue(self):
+        if self.__count_elements > 0:
+            self.__count_elements -= 1
+            self.__queue[self.__head] = -1
+            self.__head = (self.__head + 1) % self.__max_length
         else:
-            print("empity stack")
+            print("empity queue")
 
-    def pop(self):
-        if self.__pointer >= 0:
-            self.__pointer -= 1
-            return self.__stack[self.__pointer + 1]
-        else:
-            print("empity stack")
+    def status(self):
+        print(f"head: {self.__head}, element: {self.__queue[self.__head]}")
+        print(f"tail: {self.__tail}, element: {self.__queue[self.__tail]}")
+        print(f"queue: {self.queue}")
 
 
-new_stack = Stack(max_length=4)
+new_queue = Queue(max_length=4)
+new_queue.status()
 
-new_stack.pop()
-new_stack.top()
-new_stack.push(1)
-print(new_stack.stack)
-new_stack.push(2)
-print(new_stack.stack)
-new_stack.push(3)
-print(new_stack.stack)
-print(f"top: {new_stack.top()}")
-print(f"poped: {new_stack.pop()}")
-print(f"top: {new_stack.top()}")
-print(new_stack.stack)
-new_stack.push(33)
-print(new_stack.stack)
-new_stack.push(4)
-print(new_stack.stack)
-new_stack.push(5)
-print(new_stack.stack)
+new_queue.enqueue(1)
+new_queue.status()
+
+new_queue.enqueue(2)
+new_queue.status()
+
+new_queue.enqueue(3)
+new_queue.status()
+
+new_queue.enqueue(4)
+new_queue.status()
+
+new_queue.enqueue(5)
+new_queue.status()
+
+new_queue.dequeue()
+new_queue.status()
+
+new_queue.enqueue(5)
+new_queue.status()
+
+new_queue.dequeue()
+new_queue.status()
+
+new_queue.dequeue()
+new_queue.status()
+
+new_queue.dequeue()
+new_queue.status()
+
+new_queue.dequeue()
+new_queue.status()
+
+new_queue.dequeue()
+new_queue.status()
