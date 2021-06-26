@@ -6,7 +6,7 @@ class Queue:
         self.__head = 0
         self.__tail = 0
         self.__count_elements = 0
-        self.__queue = (max_length)*[0]
+        self.__queue = max_length*[0]
 
     @property
     def queue(self) -> list:
@@ -22,6 +22,7 @@ class Queue:
             print("full queue")
 
     def dequeue(self):
+        # sai da fila
         if self.__count_elements > 0:
             self.__count_elements -= 1
             self.__queue[self.__head] = -1
