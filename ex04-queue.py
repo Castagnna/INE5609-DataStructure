@@ -42,7 +42,6 @@ class Queue:
             print("queue overflow")
             return
         
-        self.__count_elements += 1
         new_element = Element(value=value, next=None)
 
         if self.__count_elements == 0:
@@ -50,36 +49,50 @@ class Queue:
             self.__tail = new_element
         else:
             self.__tail.next = new_element
-            self.__tail = new_element            
+            self.__tail = new_element
+
+        self.__count_elements += 1           
 
     def dequeue(self):
-        if self.__count_elements > 0:
-            self.__count_elements -= 1
-            poped = self.__top.value
-            self.__top = self.__top.previous
-            return poped
-        else:
+        if self.__count_elements == 0:
             print("empity queue")
+            return
+
+        unlined = self.__head.value
+
+        if self.__count_elements == 1:
+            self.__tail = None
+            self.__head = None
+
+        else:
+            self.__head= self.__head.next
+
+        self.__count_elements -= 1
+
+        return unlined
 
 
-new_queue = Queue(max_length=4)
-print(f"top element: {new_queue.top}")
-new_queue.push(1)
-print(f"top element: {new_queue.top.value}")
-new_queue.push(2)
-print(f"top element: {new_queue.top.value}")
-new_queue.push(3)
-print(f"top element: {new_queue.top.value}")
-new_queue.push(4)
-print(f"top element: {new_queue.top.value}")
-new_queue.push(5)
+new_queue = Queue()
+print(f"head: {new_queue.head}, tail: {new_queue.tail}")
+new_queue.enqueue(1)
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+new_queue.enqueue(2)
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+new_queue.enqueue(3)
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+new_queue.enqueue(4)
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+new_queue.enqueue(5)
 
-print(f"Poped element: {new_queue.pop()}")
-print(f"top element: {new_queue.top.value}")
-print(f"Poped element: {new_queue.pop()}")
-print(f"top element: {new_queue.top.value}")
-print(f"Poped element: {new_queue.pop()}")
-print(f"top element: {new_queue.top.value}")
-print(f"Poped element: {new_queue.pop()}")
-print(f"top element: {new_queue.top}")
-print(f"Poped element: {new_queue.pop()}")
+print(f"Unlined element: {new_queue.dequeue()}")
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+print(f"Unlined element: {new_queue.dequeue()}")
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+new_queue.enqueue(5)
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+print(f"Unlined element: {new_queue.dequeue()}")
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+print(f"Unlined element: {new_queue.dequeue()}")
+print(f"head: {new_queue.head.value}, tail: {new_queue.tail.value}")
+print(f"Unlined element: {new_queue.dequeue()}")
+print(f"head: {new_queue.head}, tail: {new_queue.tail}")
