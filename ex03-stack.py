@@ -44,7 +44,9 @@ class Stack:
     def pop(self):
         if self.__count_elements > 0:
             self.__count_elements -= 1
+            poped = self.__top.value
             self.__top = self.__top.previous
+            return poped
         else:
             print("empity stack")
 
@@ -60,11 +62,13 @@ print(f"top element: {new_stack.top.value}")
 new_stack.push(4)
 print(f"top element: {new_stack.top.value}")
 new_stack.push(5)
-new_stack.pop()
+
+print(f"Poped element: {new_stack.pop()}")
 print(f"top element: {new_stack.top.value}")
-new_stack.pop()
+print(f"Poped element: {new_stack.pop()}")
 print(f"top element: {new_stack.top.value}")
-new_stack.pop()
+print(f"Poped element: {new_stack.pop()}")
 print(f"top element: {new_stack.top.value}")
-new_stack.pop()
+print(f"Poped element: {new_stack.pop()}")
 print(f"top element: {new_stack.top}")
+print(f"Poped element: {new_stack.pop()}")
