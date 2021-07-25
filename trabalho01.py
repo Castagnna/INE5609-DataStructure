@@ -1,10 +1,19 @@
 
 
 class Nodo():
-    def __init__(self, dado=None):
+    def __init__(self, id:int, dado=None, anterior=None, posterior=None):
+        self.__id = id
         self.__dado = dado
-        self.__anterior = None
-        self.__posterior = None
+        self.__anterior = anterior
+        self.__posterior = posterior
+
+    @property
+    def id(self):
+        return self.__id
+    
+    @id.setter
+    def id(self, id):
+        self.__id = id
     
     @property
     def dado(self):
@@ -64,6 +73,27 @@ class Cursor():
     def ir_para_o_ultimo(self):
         pass
 
+
+class ListaEncadeada():
+    def __init__(self) -> None:
+        self.__conta_id = 0
+        self.__tamanho = 0
+        self.__cabeca = Nodo(id=-1)
+        self.__rabo = Nodo(id=-2)
+        self.__cabeca.posterior = self.__rabo
+        self.__rabo.anterior = self.__cabeca
+    
+    def esta_vazia(self) -> bool:
+        return self.__tamanho == 0
+
+    def __len__(self):
+        return self.__tamanho
+
+    def inseri_depois_de(self, dado, anterior:Nodo):
+        pass
+
+    def inseri_antes_de(self, dado, posterior:Nodo):
+        pass
 
 nodo = Nodo()
 print(nodo.dado)
