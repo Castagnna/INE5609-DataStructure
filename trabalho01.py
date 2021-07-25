@@ -41,9 +41,10 @@ class Nodo:
 
 
 class Cursor:
-    def __init__(self, nodo_atual = None):
-        self.__nodo_atual = nodo_atual
-        self.__posicao = -1
+    def __init__(self, lista:'ListaEncadeada'):
+        self.__lista = lista
+        self.__nodo_atual = None
+        self.__posicao = 0
     
     @property
     def nodo_atual(self) -> Nodo:
@@ -61,17 +62,21 @@ class Cursor:
     def posicao(self, posicao: int):
         self.__posicao = posicao
 
-    def avancar_k_posicoes(self, k:int):
-        pass
-
-    def retroceder_k_posicoes(self, k:int):
-        pass
-
     def ir_para_o_primeiro(self):
-        pass
+        if not self.__lista.esta_vazia:
+            self.__posicao = 1
+            self.__nodo_atual = self.__lista.cabeca.posterior
 
     def ir_para_o_ultimo(self):
-        pass
+        if not self.__lista.esta_vazia:
+            self.__posicao = self.__lista.tamanho
+            self.__nodo_atual = self.__lista.rabo.anterior
+
+    def avancar_k_posicoes(self, k:int):
+        self.__posicao += k
+
+    def retroceder_k_posicoes(self, k:int):
+        self.__posicao -= k
 
 
 class ListaEncadeada:
@@ -82,7 +87,15 @@ class ListaEncadeada:
         self.__rabo = Nodo(id=-1)
         self.__cabeca.posterior = self.__rabo
         self.__rabo.anterior = self.__cabeca
-        self.__cursor = Cursor(nodo_atual=self.__rabo)
+        self.__cursor = Cursor(lista=self)
+
+    @property
+    def cabeca(self):
+        return self.__cabeca
+
+    @property
+    def rabo(self):
+        return self.__rabo
     
     def esta_vazia(self) -> bool:
         return self.__tamanho == 0
@@ -106,5 +119,21 @@ class ListaEncadeada:
         posterior.anterior = novo_nodo
         self.__tamanho += 1
 
-nodo = Nodo()
-print(nodo.dado)
+    def deletar_nodo(self, nodo:Nodo):
+        if self.esta_vazia():
+            return
+        anterior = nodo.anterior
+        posterior = nodo.posterior
+        anterior.posterior = posterior
+        posterior.anterior = anterior
+        self.__tamanho -= 1
+        nodo.anterior = nodo.posterior = nodo.dado = None
+
+    def contem_dado(self, dado) -> bool:
+        proximo_nodo = self.__cabeca.posterior
+        while proximo_nodo.dado != None:
+            if proximo_nodo.dado == dado:
+                return True
+            else:
+                proximo_nodo = proximo_nodo.posterior
+        return False
