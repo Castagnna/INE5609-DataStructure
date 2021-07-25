@@ -73,10 +73,28 @@ class Cursor:
             self.__nodo_atual = self.__lista.rabo.anterior
 
     def avancar_k_posicoes(self, k:int):
-        self.__posicao += k
+        if self.__lista.esta_vazia:
+            return
+        if self.__posicao + k > self.__lista.tamanho:
+            self.ir_para_o_ultimo()
+
+        contador = 0
+        while contador < k:
+            self.__posicao += 1
+            contador += 1
+            self.__nodo_atual = self.__nodo_atual.posterior
 
     def retroceder_k_posicoes(self, k:int):
-        self.__posicao -= k
+        if self.__lista.esta_vazia:
+            return
+        if self.__posicao - k < 1:
+            self.ir_para_o_primeiro()
+            
+        contador = 0
+        while contador < k:
+            self.__posicao -= 1
+            contador += 1
+            self.__nodo_atual = self.__nodo_atual.anterior
 
 
 class ListaEncadeada:
