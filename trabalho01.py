@@ -63,15 +63,15 @@ class Cursor:
         self.__posicao = posicao
 
     def ir_para_o_primeiro(self):
-        if not self.__lista.esta_vazia:
+        if self.__lista.esta_vazia():
+            self.__posicao = 0
+            self.__nodo_atual = self.__lista.rabo   
+        else:
             self.__posicao = 1
             self.__nodo_atual = self.__lista.cabeca.posterior
-        else:
-            self.__posicao = 0
-            self.__nodo_atual = self.__lista.rabo
 
     def ir_para_o_ultimo(self):
-        if not self.__lista.esta_vazia:
+        if not self.__lista.esta_vazia():
             self.__posicao = self.__lista.tamanho
             self.__nodo_atual = self.__lista.rabo.anterior
         else:
@@ -79,10 +79,11 @@ class Cursor:
             self.__nodo_atual = self.__lista.cabeca
 
     def avancar_k_posicoes(self, k:int):
-        if self.__lista.esta_vazia:
+        if self.__lista.esta_vazia():
             return
         if self.__posicao + k > self.__lista.tamanho:
             self.ir_para_o_ultimo()
+            return
 
         contador = 0
         while contador < k:
@@ -91,10 +92,11 @@ class Cursor:
             self.__nodo_atual = self.__nodo_atual.posterior
 
     def retroceder_k_posicoes(self, k:int):
-        if self.__lista.esta_vazia:
+        if self.__lista.esta_vazia():
             return
         if self.__posicao - k < 1:
             self.ir_para_o_primeiro()
+            return
             
         contador = 0
         while contador < k:
@@ -124,6 +126,10 @@ class ListaEncadeada:
     @property
     def cursor(self) -> Cursor:
         return self.__cursor
+
+    @property
+    def tamanho(self) -> int:
+        return self.__tamanho
     
     def esta_vazia(self) -> bool:
         return self.__tamanho == 0
@@ -184,10 +190,11 @@ class ListaEncadeada:
         while proximo_nodo.dado != None:
             contador += 1
             dado = proximo_nodo.dado
-            print(f'[{contador}:{dado}]')
+            print(f'[{contador}º: {dado}] ', end='')
             proximo_nodo = proximo_nodo.posterior
             if contador > 10:
                 break
+        print()
 
 
 if __name__ == '__main__':
@@ -195,15 +202,35 @@ if __name__ == '__main__':
     print(len(lista)) 
     print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
 
+    lista.inserir_por_primero(7)
+    print(len(lista))
+    lista.imprimir_lista()
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
+
+    lista.inserir_por_primero(6)
+    print(len(lista))
+    lista.imprimir_lista()
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
+
+    lista.inserir_por_ultimo(12)
+    print(len(lista))
+    lista.imprimir_lista()
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
+
     lista.inserir_por_primero(4)
     print(len(lista))
-    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
-
-    lista.inserir_por_primero(1)
-    print(len(lista))
-    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
     lista.imprimir_lista()
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
 
-    lista.inserir_por_ultimo(5)
+    lista.inserir_por_ultimo(-1)
     print(len(lista))
+    lista.imprimir_lista()
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
+
+    lista.cursor.ir_para_o_ultimo()
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
+
+    print(f'Contem 5: {lista.contem_dado(5)}')
+    print(f'Contem 7: {lista.contem_dado(10)}')
+
     lista.imprimir_lista()
