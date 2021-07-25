@@ -41,9 +41,9 @@ class Nodo:
 
 
 class Cursor:
-    def __init__(self, lista:'ListaEncadeada'):
+    def __init__(self, lista:'ListaEncadeada', nodo_atual:Nodo):
         self.__lista = lista
-        self.__nodo_atual = None
+        self.__nodo_atual = nodo_atual
         self.__posicao = 0
     
     @property
@@ -55,7 +55,7 @@ class Cursor:
         self.__nodo_atual = nodo
 
     @property
-    def posicao(self) -> Nodo:
+    def posicao(self) -> int:
         return self.__posicao
     
     @posicao.setter
@@ -111,15 +111,19 @@ class ListaEncadeada:
         self.__rabo = Nodo(id=-1)
         self.__cabeca.posterior = self.__rabo
         self.__rabo.anterior = self.__cabeca
-        self.__cursor = Cursor(lista=self)
+        self.__cursor = Cursor(lista=self, nodo_atual=self.__cabeca)
 
     @property
-    def cabeca(self):
+    def cabeca(self) -> Nodo:
         return self.__cabeca
 
     @property
-    def rabo(self):
+    def rabo(self) -> Nodo:
         return self.__rabo
+
+    @property
+    def cursor(self) -> Cursor:
+        return self.__cursor
     
     def esta_vazia(self) -> bool:
         return self.__tamanho == 0
@@ -135,7 +139,7 @@ class ListaEncadeada:
         posterior.anterior = novo_nodo
         self.__tamanho += 1
         self.__cursor.avancar_k_posicoes(1)
-
+        
     def inserir_antes_de(self, dado, atual:Nodo):
         self.__conta_id += 1
         anterior = atual.anterior
@@ -182,22 +186,24 @@ class ListaEncadeada:
             dado = proximo_nodo.dado
             print(f'[{contador}:{dado}]')
             proximo_nodo = proximo_nodo.posterior
-
             if contador > 10:
                 break
 
 
 if __name__ == '__main__':
     lista = ListaEncadeada()
-    print(len(lista))   
+    print(len(lista)) 
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
 
-    lista.inserir_por_primero(2)
+    lista.inserir_por_primero(4)
     print(len(lista))
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
 
     lista.inserir_por_primero(1)
     print(len(lista))
+    print(f'Cursor atual: {lista.cursor.nodo_atual.dado}, posicao {lista.cursor.posicao}')
     lista.imprimir_lista()
 
-    lista.inserir_por_ultimo(3)
+    lista.inserir_por_ultimo(5)
     print(len(lista))
     lista.imprimir_lista()
