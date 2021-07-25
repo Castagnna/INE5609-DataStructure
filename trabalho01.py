@@ -66,11 +66,17 @@ class Cursor:
         if not self.__lista.esta_vazia:
             self.__posicao = 1
             self.__nodo_atual = self.__lista.cabeca.posterior
+        else:
+            self.__posicao = 0
+            self.__nodo_atual = self.__lista.rabo
 
     def ir_para_o_ultimo(self):
         if not self.__lista.esta_vazia:
             self.__posicao = self.__lista.tamanho
             self.__nodo_atual = self.__lista.rabo.anterior
+        else:
+            self.__posicao = 0
+            self.__nodo_atual = self.__lista.cabeca
 
     def avancar_k_posicoes(self, k:int):
         if self.__lista.esta_vazia:
@@ -121,21 +127,33 @@ class ListaEncadeada:
     def __len__(self):
         return self.__tamanho
 
-    def inserir_depois_de(self, dado, anterior:Nodo):
+    def inserir_depois_de(self, dado, atual:Nodo):
         self.__conta_id += 1
-        posterior = anterior.posterior
-        novo_nodo = Nodo(id=self.__conta_id, dado=dado, anterior=anterior, posterior=posterior)
-        anterior.posterior = novo_nodo
+        posterior = atual.posterior
+        novo_nodo = Nodo(id=self.__conta_id, dado=dado, anterior=atual, posterior=posterior)
+        atual.posterior = novo_nodo
         posterior.anterior = novo_nodo
         self.__tamanho += 1
+        self.__cursor.avancar_k_posicoes(1)
 
-    def inserir_antes_de(self, dado, posterior:Nodo):
+    def inserir_antes_de(self, dado, atual:Nodo):
         self.__conta_id += 1
-        anterior = posterior.anterior
-        novo_nodo = Nodo(id=self.__conta_id, dado=dado, anterior=anterior, posterior=posterior)
+        anterior = atual.anterior
+        novo_nodo = Nodo(id=self.__conta_id, dado=dado, anterior=anterior, posterior=atual)
         anterior.posterior = novo_nodo
-        posterior.anterior = novo_nodo
+        atual.anterior = novo_nodo
         self.__tamanho += 1
+        self.__cursor.retroceder_k_posicoes(1)
+
+    def inserir_por_primero(self, dado):
+        self.__cursor.ir_para_o_primeiro()
+        atual = self.__cursor.nodo_atual
+        self.inserir_antes_de(dado, atual)
+
+    def inserir_por_ultimo(self, dado):
+        self.__cursor.ir_para_o_ultimo()
+        atual = self.__cursor.nodo_atual
+        self.inserir_depois_de(dado, atual)
 
     def deletar_nodo(self, nodo:Nodo):
         if self.esta_vazia():
@@ -155,3 +173,31 @@ class ListaEncadeada:
             else:
                 proximo_nodo = proximo_nodo.posterior
         return False
+
+    def imprimir_lista(self):
+        proximo_nodo = self.__cabeca.posterior
+        contador = 0
+        while proximo_nodo.dado != None:
+            contador += 1
+            dado = proximo_nodo.dado
+            print(f'[{contador}:{dado}]')
+            proximo_nodo = proximo_nodo.posterior
+
+            if contador > 10:
+                break
+
+
+if __name__ == '__main__':
+    lista = ListaEncadeada()
+    print(len(lista))   
+
+    lista.inserir_por_primero(2)
+    print(len(lista))
+
+    lista.inserir_por_primero(1)
+    print(len(lista))
+    lista.imprimir_lista()
+
+    lista.inserir_por_ultimo(3)
+    print(len(lista))
+    lista.imprimir_lista()
