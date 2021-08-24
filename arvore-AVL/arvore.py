@@ -42,27 +42,6 @@ class AVLTree:
         else:
             print("Value already in tree!")
 
-    def _get_height(self, cur_node:Node):
-        
-        if cur_node == None:
-            return 0
-        
-        return cur_node.height
-
-    def _rebalance_node(self, z:Node, y:Node, x:Node):
-        if y == z.left_child and x == y.left_child:
-            self._right_rotate(z)
-        elif y == z.left_child and x == y.right_child:
-            self._left_rotate(y)
-            self._right_rotate(z)
-        elif y == z.right_child and x == y.right_child:
-            self._left_rotate(z)
-        elif y == z.right_child and x == y.left_child:
-            self._right_rotate(y)
-            self._left_rotate(z)
-        else:
-            raise Exception('_rebalance_node: z,y,x node configuration not recognized!')
-            
     def _inspect_insertion(self, cur_node:Node, node_path = []):
         
         if cur_node.parent == None:
@@ -86,6 +65,90 @@ class AVLTree:
             cur_node.parent.height = new_height
 
         self._inspect_insertion(cur_node.parent, node_path)
+
+    def _get_height(self, cur_node:Node):
+        
+        if cur_node == None:
+            return 0
+        
+        return cur_node.height
+
+    def _rebalance_node(self, node_z:Node, node_y:Node, node_x:Node):
+
+        # se o filho esquerdo de Z e for Y e o filho esquerdo de Y for X,
+        # então faz uma rotacao direita em z
+        if node_z.left_child == node_y and node_y.left_child == node_x:
+            self._right_rotate(node_z)
+
+        # se o filho esquerdo de Z e for Y e o filho direito de Y for X,
+        # então faz uma rotacao esquerda em y e rotação direita em z
+        elif node_z.left_child == node_y and node_y.right_child == node_x:
+            self._left_rotate(node_y)
+            self._right_rotate(node_z)
+
+        # se o filho direito de Z e for Y e o filho direito de Y for X,
+        # então faz uma rotacao esquera em z
+        elif node_z.right_child == node_y and node_y.right_child == node_x:
+            self._left_rotate(node_z)
+
+        # se o filho direito de Z e for Y e o filho esquerdo de Y for X,
+        # então faz uma rotacao direita em y e rotação esquerda em z
+        elif node_z.right_child == node_y and node_y.left_child == node_x:
+            self._right_rotate(node_y)
+            self._left_rotate(node_z)
+
+        else:
+            raise Exception('_rebalance_node: z,y,x node configuration not recognized!')
+
+    def _right_rotate(self, node_z:Node):
+
+        sub_root = node_z.parent 
+        node_y = node_z.left_child
+        node_t3 = node_y.right_child
+        node_y.right_child = node_z
+        node_z.parent = node_y
+        node_z.left_child = node_t3
+
+        if node_t3 != None:
+            node_t3.parent = node_z
+
+        node_y.parent = sub_root
+
+        if node_y.parent == None:
+                self.root = node_y
+        else:
+            if node_y.parent.left_child == node_z:
+                node_y.parent.left_child = node_y
+            else:
+                node_y.parent.right_child = node_y	
+
+        node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
+        node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
+
+    def _left_rotate(self, node_z:Node):
+
+        sub_root = node_z.parent 
+        node_y = node_z.right_child
+        node_t2 = node_y.left_child
+        node_y.left_child = node_z
+        node_z.parent = node_y
+        node_z.right_child = node_t2
+
+        if node_t2 != None:
+            node_t2.parent = node_z
+
+        node_y.parent=sub_root
+
+        if node_y.parent == None: 
+            self.root = node_y
+        else:
+            if node_y.parent.left_child == node_z:
+                node_y.parent.left_child = node_y
+            else:
+                node_y.parent.right_child = node_y
+
+        node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
+        node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
             
     def print_tree(self):
         if self.root != None:
