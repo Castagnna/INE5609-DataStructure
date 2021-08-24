@@ -21,24 +21,30 @@ class AVLTree:
             self._insert(value, self.root)
 
     def _insert(self, value:int, cur_node:Node):
-
+        
+        # se o valor a ser inserido for menor que o valor do no atual,
         if value < cur_node.value:
-
+            # e se estiver vazia a posição esquerda do no atual, inseri na esquerda
             if cur_node.left_child == None:
                 cur_node.left_child = Node(value)
-                cur_node.left_child.parent = cur_node # set parent
+                cur_node.left_child.parent = cur_node
+                # apos inserir o novo no eh preciso verificar o balanceamento da arvore
                 self._inspect_insertion(cur_node.left_child)
+
+            # se nao, repete o processo com o elemento esquerdo do no atual
             else:
                 self._insert(value, cur_node.left_child)
-                
-        elif value > cur_node.value:
 
+        # se o valor a ser inserido for maior que o valor do no atual, guarda na direita   
+        elif value > cur_node.value:
             if cur_node.right_child == None:
                 cur_node.right_child = Node(value)
                 cur_node.right_child.parent = cur_node # set parent
                 self._inspect_insertion(cur_node.right_child)
             else:
                 self._insert(value, cur_node.right_child)
+
+        # se o valor nao for nem menor nem maior, então é o igual ao valor do no atual
         else:
             print("Value already in tree!")
 
@@ -52,18 +58,24 @@ class AVLTree:
         left_height = self._get_height(cur_node.parent.left_child)
         right_height = self._get_height(cur_node.parent.right_child)
 
+        # se o absoluto da diferenca entre a arvore a esquera e a direita do no atual for maior que 1
+        # é preciso rebalancear
         if abs(left_height - right_height) > 1:
-            # altura da arvore esquerda menos direita tem que estar entre [-1, 1]
-            # caso contrário é preciso rebalancear
             node_path = [cur_node.parent] + node_path
-            self._rebalance_node(node_path[0], node_path[1], node_path[2])
+            self._rebalance_node(
+                node_z = node_path[0],
+                node_y = node_path[1],
+                node_x = node_path[2],
+            )
             return
 
-        new_height = 1 + cur_node.height 
-        
-        if new_height > cur_node.parent.height:
-            cur_node.parent.height = new_height
+        # se não for preciso rebalancear, então vamos atualizar a altura do no pai
+        new_parent_height = 1 + cur_node.height 
 
+        if new_parent_height > cur_node.parent.height:
+            cur_node.parent.height = new_parent_height
+
+        # vamos continuar esse processo recursivamente até a raiz
         self._inspect_insertion(cur_node.parent, node_path)
 
     def _get_height(self, cur_node:Node):
