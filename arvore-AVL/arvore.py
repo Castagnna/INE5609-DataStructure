@@ -114,9 +114,51 @@ class AVLTree:
         else:
             raise Exception('_rebalance_node: z, y, x node configuration not recognized!')
 
+    def _left_rotate(self, node_z:Node):
+        # 1) guarda o pai de Z
+        z_parent = node_z.parent
+
+        # 2) garante que o no Y é o filho direito de Z
+        node_y = node_z.right_child
+
+        # 3) Faz a arvore 2 auxiliar (tree 2) receber o filho esquerdo de Y
+        node_t2 = node_y.left_child
+
+        # 4) Faz filho esquerdo de Y receber o no Z
+        node_y.left_child = node_z
+
+        # 5) O novo pai de Z vira Y
+        node_z.parent = node_y
+
+        # 6) O filho direito de Z recebe a arvore 2
+        node_z.right_child = node_t2
+
+        # 7) Caso o a arvore 2 não seja nula, seu pai é Z
+        if node_t2 != None:
+            node_t2.parent = node_z
+
+        # 8) O novo pai de Y recebe o antigo pai de Z
+        node_y.parent = z_parent
+
+        # 9) Se o pai de Y for Nulo então ele é a raiz da arvore
+        if node_y.parent == None: 
+            self.root = node_y
+
+        # 10) Se não, se por acaso o filho esquerdo do pai de Y for Z, ajustar para Y
+        elif node_y.parent.left_child == node_z:
+            node_y.parent.left_child = node_y
+
+        # 10) Se não, o filho direito do pai de Y deve ser Y
+        else:
+            node_y.parent.right_child = node_y
+
+        # a nova altura do nó será: 1 + a maior altura dentre os seus filhos
+        node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
+        node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
+
     def _right_rotate(self, node_z:Node):
 
-        sub_root = node_z.parent 
+        z_parent = node_z.parent 
         node_y = node_z.left_child
         node_t3 = node_y.right_child
         node_y.right_child = node_z
@@ -126,7 +168,7 @@ class AVLTree:
         if node_t3 != None:
             node_t3.parent = node_z
 
-        node_y.parent = sub_root
+        node_y.parent = z_parent
 
         if node_y.parent == None:
                 self.root = node_y
@@ -136,33 +178,6 @@ class AVLTree:
             else:
                 node_y.parent.right_child = node_y	
 
-        # a nova altura do nó será: 1 + a maior altura dentre os seus filhos
-        node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
-        node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
-
-    def _left_rotate(self, node_z:Node):
-
-        sub_root = node_z.parent 
-        node_y = node_z.right_child
-        node_t2 = node_y.left_child
-        node_y.left_child = node_z
-        node_z.parent = node_y
-        node_z.right_child = node_t2
-
-        if node_t2 != None:
-            node_t2.parent = node_z
-
-        node_y.parent=sub_root
-
-        if node_y.parent == None: 
-            self.root = node_y
-        else:
-            if node_y.parent.left_child == node_z:
-                node_y.parent.left_child = node_y
-            else:
-                node_y.parent.right_child = node_y
-
-        # a nova altura do nó será: 1 + a maior altura dentre os seus filhos
         node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
         node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
             
@@ -187,7 +202,7 @@ class AVLTree:
         sep = ' ' * (2 ** (cur_height - 1)) # variable sized separator between elements
         
         while True:
-            cur_height += -1 # decrement current height
+            cur_height += -1
             if len(cur_nodes) == 0:
                 break
             cur_row = ' '
@@ -244,5 +259,29 @@ if __name__ == '__main__':
     print(new_tree)
 
     new_tree.insert(3)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(20)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(30)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(15)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(4)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(14)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(13)
     new_tree.print_tree()
     print(new_tree)
