@@ -171,7 +171,7 @@ class AVLTree:
     def _delete_node(self,node):
 
     	# previne quebra de codigo caso o No nao exista
-	    if node==None:
+	    if node==None or self.find(node.value)==None:
 	    	print("Node to be deleted not found in the tree!")
 	    	return None 
 
@@ -279,12 +279,13 @@ class AVLTree:
     		return None
 
     def _find(self,value,cur_node):
-    	if value==cur_node.value:
-    		return cur_node
-    	elif value<cur_node.value and cur_node.left_child!=None:
-    		return self._find(value,cur_node.left_child)
-    	elif value>cur_node.value and cur_node.right_child!=None:
-    		return self._find(value,cur_node.right_child)
+        print('entrou:', value, cur_node.value)
+        if value==cur_node.value:
+        	return cur_node
+        elif value<cur_node.value and cur_node.left_child!=None:
+        	return self._find(value,cur_node.left_child)
+        elif value>cur_node.value and cur_node.right_child!=None:
+        	return self._find(value,cur_node.right_child)
 
     def __repr__(self):
         
