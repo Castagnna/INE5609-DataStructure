@@ -21,7 +21,7 @@ class AVLTree:
             self._insert(value, self.root)
 
     def _insert(self, value:int, cur_node:Node):
-        
+
         # se o valor a ser inserido for menor que o valor do no atual,
         if value < cur_node.value:
             # e se estiver vazia a posição esquerda do no atual, inseri na esquerda
@@ -53,6 +53,8 @@ class AVLTree:
         if cur_node.parent == None:
             return
         
+        # lista que acumula o caminho dos nodos da folha até a raiz
+        # [raiz, ... z, x, y, ...folha]
         node_path = [cur_node] + node_path
 
         left_height = self._get_height(cur_node.parent.left_child)
@@ -63,9 +65,9 @@ class AVLTree:
         if abs(left_height - right_height) > 1:
             node_path = [cur_node.parent] + node_path
             self._rebalance_node(
-                node_z = node_path[0],
-                node_y = node_path[1],
-                node_x = node_path[2],
+                node_z=node_path[0],
+                node_y=node_path[1],
+                node_x=node_path[2],
             )
             return
 
@@ -87,24 +89,24 @@ class AVLTree:
 
     def _rebalance_node(self, node_z:Node, node_y:Node, node_x:Node):
 
-        # LEFT LEFT CASE: se o filho esquerdo de Z e for Y e o filho esquerdo de Y for X,
-        # então faz uma rotacao direita em z
+        # LEFT LEFT CASE: se o filho esquerdo de Z for Y, e o filho esquerdo de Y for X,
+        # então faz uma rotacao direita em Z
         if node_z.left_child == node_y and node_y.left_child == node_x:
             self._right_rotate(node_z)
 
-        # LEFT RIGHT CASE: se o filho esquerdo de Z e for Y e o filho direito de Y for X,
-        # então faz uma rotacao esquerda em y e rotação direita em z
+        # LEFT RIGHT CASE: se o filho esquerdo de Z for Y, e o filho direito de Y for X,
+        # então faz uma rotacao esquerda em Y e rotação direita em Z
         elif node_z.left_child == node_y and node_y.right_child == node_x:
             self._left_rotate(node_y)
             self._right_rotate(node_z)
 
-        # RIGHT RIGHT CASE: se o filho direito de Z e for Y e o filho direito de Y for X,
-        # então faz uma rotacao esquera em z
+        # RIGHT RIGHT CASE: se o filho direito de Z for Y, e o filho direito de Y for X,
+        # então faz uma rotacao esquera em Z
         elif node_z.right_child == node_y and node_y.right_child == node_x:
             self._left_rotate(node_z)
 
-        # RIGHT LEFT CASE: se o filho direito de Z e for Y e o filho esquerdo de Y for X,
-        # então faz uma rotacao direita em y e rotação esquerda em z
+        # RIGHT LEFT CASE: se o filho direito de Z for Y, e o filho esquerdo de Y for X,
+        # então faz uma rotacao direita em Y e rotação esquerda em Z
         elif node_z.right_child == node_y and node_y.left_child == node_x:
             self._right_rotate(node_y)
             self._left_rotate(node_z)
