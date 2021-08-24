@@ -1,7 +1,7 @@
 
 
 class Node:
-    def __init__(self,value = None):
+    def __init__(self, value = None):
         self.value = value
         self.left_child = None
         self.right_child = None
@@ -14,13 +14,13 @@ class AVLTree:
     def __init__(self):
         self.root = None
 
-    def insert(self, value):
+    def insert(self, value:int):
         if self.root == None:
             self.root = Node(value)
         else:
             self._insert(value, self.root)
 
-    def _insert(self, value, cur_node):
+    def _insert(self, value:int, cur_node:Node):
 
         if value < cur_node.value:
 
@@ -42,27 +42,42 @@ class AVLTree:
         else:
             print("Value already in tree!")
 
-    def _get_height(self, cur_node):
+    def _get_height(self, cur_node:Node):
         
         if cur_node == None:
             return 0
         
         return cur_node.height
+
+    def _rebalance_node(self, z:Node, y:Node, x:Node):
+        if y == z.left_child and x == y.left_child:
+            self._right_rotate(z)
+        elif y == z.left_child and x == y.right_child:
+            self._left_rotate(y)
+            self._right_rotate(z)
+        elif y == z.right_child and x == y.right_child:
+            self._left_rotate(z)
+        elif y == z.right_child and x == y.left_child:
+            self._right_rotate(y)
+            self._left_rotate(z)
+        else:
+            raise Exception('_rebalance_node: z,y,x node configuration not recognized!')
             
-    def _inspect_insertion(self, cur_node, path = []):
+    def _inspect_insertion(self, cur_node:Node, node_path = []):
         
         if cur_node.parent == None:
             return
         
-        path = [cur_node] + path
+        node_path = [cur_node] + node_path
 
         left_height = self._get_height(cur_node.parent.left_child)
         right_height = self._get_height(cur_node.parent.right_child)
 
-        # altura esquerda menos direita tem que estar entre [-1, 1]
         if abs(left_height - right_height) > 1:
-            path = [cur_node.parent] + path
-            # self._rebalance_node(path[0], path[1], path[2])
+            # altura da arvore esquerda menos direita tem que estar entre [-1, 1]
+            # caso contrário é preciso rebalancear
+            node_path = [cur_node.parent] + node_path
+            self._rebalance_node(node_path[0], node_path[1], node_path[2])
             return
 
         new_height = 1 + cur_node.height 
@@ -70,13 +85,13 @@ class AVLTree:
         if new_height > cur_node.parent.height:
             cur_node.parent.height = new_height
 
-        self._inspect_insertion(cur_node.parent, path)
+        self._inspect_insertion(cur_node.parent, node_path)
             
     def print_tree(self):
         if self.root != None:
             self._print_tree(self.root)
 
-    def _print_tree(self, cur_node):
+    def _print_tree(self, cur_node:Node):
         if cur_node != None:
             self._print_tree(cur_node.left_child)
             print(f'{cur_node.value}, h = {cur_node.height}')
@@ -157,5 +172,9 @@ if __name__ == '__main__':
     print(new_tree.__repr__())
 
     new_tree.insert(70)
+    new_tree.print_tree()
+    print(new_tree.__repr__())
+
+    new_tree.insert(35)
     new_tree.print_tree()
     print(new_tree.__repr__())
