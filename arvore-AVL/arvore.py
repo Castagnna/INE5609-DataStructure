@@ -98,7 +98,7 @@ class AVLTree:
             self._left_rotate(node_z)
 
         else:
-            raise Exception('_rebalance_node: z,y,x node configuration not recognized!')
+            raise Exception('_rebalance_node: z, y, x node configuration not recognized!')
 
     def _right_rotate(self, node_z:Node):
 
@@ -174,7 +174,8 @@ class AVLTree:
         
         while True:
             cur_height += -1 # decrement current height
-            if len(cur_nodes)==0: break
+            if len(cur_nodes) == 0:
+                break
             cur_row = ' '
             next_row = ''
             next_nodes = []
@@ -212,7 +213,7 @@ class AVLTree:
 
             content += (cur_height * '   ' + cur_row + '\n' + cur_height * '   ' + next_row + '\n')
             cur_nodes = next_nodes
-            sep = ' ' * int(len(sep) / 2) # cut separator size in half
+            sep = ' ' * int(len(sep) / 2)
 
         return content
 
@@ -220,26 +221,14 @@ class AVLTree:
 if __name__ == '__main__':
     new_tree = AVLTree()
 
-    new_tree.insert(30)
+    new_tree.insert(5)
     new_tree.print_tree()
-    print(new_tree.__repr__())
+    print(new_tree)
 
-    new_tree.insert(20)
+    new_tree.insert(2)
     new_tree.print_tree()
-    print(new_tree.__repr__())
+    print(new_tree)
 
-    new_tree.insert(50)
+    new_tree.insert(3)
     new_tree.print_tree()
-    print(new_tree.__repr__())
-
-    new_tree.insert(40)
-    new_tree.print_tree()
-    print(new_tree.__repr__())
-
-    new_tree.insert(70)
-    new_tree.print_tree()
-    print(new_tree.__repr__())
-
-    new_tree.insert(35)
-    new_tree.print_tree()
-    print(new_tree.__repr__())
+    print(new_tree)
