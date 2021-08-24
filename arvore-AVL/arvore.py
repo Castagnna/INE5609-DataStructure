@@ -75,23 +75,23 @@ class AVLTree:
 
     def _rebalance_node(self, node_z:Node, node_y:Node, node_x:Node):
 
-        # se o filho esquerdo de Z e for Y e o filho esquerdo de Y for X,
+        # LEFT LEFT CASE: se o filho esquerdo de Z e for Y e o filho esquerdo de Y for X,
         # então faz uma rotacao direita em z
         if node_z.left_child == node_y and node_y.left_child == node_x:
             self._right_rotate(node_z)
 
-        # se o filho esquerdo de Z e for Y e o filho direito de Y for X,
+        # LEFT RIGHT CASE: se o filho esquerdo de Z e for Y e o filho direito de Y for X,
         # então faz uma rotacao esquerda em y e rotação direita em z
         elif node_z.left_child == node_y and node_y.right_child == node_x:
             self._left_rotate(node_y)
             self._right_rotate(node_z)
 
-        # se o filho direito de Z e for Y e o filho direito de Y for X,
+        # RIGHT RIGHT CASE: se o filho direito de Z e for Y e o filho direito de Y for X,
         # então faz uma rotacao esquera em z
         elif node_z.right_child == node_y and node_y.right_child == node_x:
             self._left_rotate(node_z)
 
-        # se o filho direito de Z e for Y e o filho esquerdo de Y for X,
+        # RIGHT LEFT CASE: se o filho direito de Z e for Y e o filho esquerdo de Y for X,
         # então faz uma rotacao direita em y e rotação esquerda em z
         elif node_z.right_child == node_y and node_y.left_child == node_x:
             self._right_rotate(node_y)
@@ -122,6 +122,7 @@ class AVLTree:
             else:
                 node_y.parent.right_child = node_y	
 
+        # a nova altura do nó será: 1 + a maior altura dentre os seus filhos
         node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
         node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
 
@@ -147,6 +148,7 @@ class AVLTree:
             else:
                 node_y.parent.right_child = node_y
 
+        # a nova altura do nó será: 1 + a maior altura dentre os seus filhos
         node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
         node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
             
