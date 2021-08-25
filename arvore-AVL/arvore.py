@@ -9,7 +9,7 @@ class Node:
         self.left_child = None
         self.right_child = None
         self.parent = None # aponta para o pai do No
-        self.height = 1 # a altura do no na arvore
+        self.height = 1 # a altura do No na arvore
 
 
 class AVLTree:
@@ -25,20 +25,20 @@ class AVLTree:
 
     def _insert(self, value:int, cur_node:Node):
 
-        # se o valor a ser inserido for menor que o valor do no atual,
+        # se o valor a ser inserido for menor que o valor do No atual,
         if value < cur_node.value:
-            # e se estiver vazia a posição esquerda do no atual, inseri na esquerda
+            # e se estiver vazia a posição esquerda do No atual, inseri na esquerda
             if cur_node.left_child == None:
                 cur_node.left_child = Node(value)
                 cur_node.left_child.parent = cur_node
-                # apos inserir o novo no eh preciso verificar o balanceamento da arvore
+                # apos inserir o novo No eh preciso verificar o balanceamento da arvore
                 self._inspect_insertion(cur_node.left_child)
 
-            # se nao, repete o processo com o elemento esquerdo do no atual
+            # se nao, repete o processo com o elemento esquerdo do No atual
             else:
                 self._insert(value, cur_node.left_child)
 
-        # se o valor a ser inserido for maior que o valor do no atual, guarda na direita   
+        # se o valor a ser inserido for maior que o valor do No atual, guarda na direita   
         elif value > cur_node.value:
             if cur_node.right_child == None:
                 cur_node.right_child = Node(value)
@@ -47,7 +47,7 @@ class AVLTree:
             else:
                 self._insert(value, cur_node.right_child)
 
-        # se o valor nao for nem menor nem maior, então é o igual ao valor do no atual
+        # se o valor nao for nem menor nem maior, então é o igual ao valor do No atual
         else:
             print("Value already in tree!")
 
@@ -63,8 +63,8 @@ class AVLTree:
         left_height = self._get_height(cur_node.parent.left_child)
         right_height = self._get_height(cur_node.parent.right_child)
 
-        # se o absoluto da diferenca entre a arvore a esquera e a direita do no atual for maior que 1
-        # é preciso rebalancear
+        # se o absoluto da diferenca entre a arvore a esquera e a direita
+        # do No atual for maior que 1 será preciso rebalancear
         if abs(left_height - right_height) > 1:
             node_path = [cur_node.parent] + node_path
             self._rebalance_node(
@@ -74,7 +74,7 @@ class AVLTree:
             )
             return
 
-        # se não for preciso rebalancear, então vamos atualizar a altura do no pai
+        # se não for preciso rebalancear, então vamos atualizar a altura do No pai
         new_parent_height = 1 + cur_node.height 
 
         if new_parent_height > cur_node.parent.height:
@@ -118,16 +118,16 @@ class AVLTree:
             raise Exception('_rebalance_node: z, y, x node configuration not recognized!')
 
     def _left_rotate(self, node_z:Node):
-        # 1) guarda o pai de Z
+        # 1) Guarda o pai de Z
         z_parent = node_z.parent
 
-        # 2) cria um no Y que é o filho direito de Z
+        # 2) Atribui ao No Y o filho direito de Z
         node_y = node_z.right_child
 
-        # 3) Cria um nó auxiliar T2 que recebe o filho esquerdo de Y
+        # 3) Atribui ao No T2 o filho esquerdo de Y
         node_t2 = node_y.left_child
 
-        # 4) Faz filho esquerdo de Y receber o no Z
+        # 4) Faz filho esquerdo de Y receber o No Z
         node_y.left_child = node_z
 
         # 5) O novo pai de Z vira Y
@@ -197,7 +197,7 @@ class AVLTree:
             print("Node to be deleted not found in the tree!")
             return None 
 
-        # retorna o elemento com menor valor a partir do no recebido (menor filho)
+        # retorna o elemento com menor valor a partir do No recebido (menor filho)
         def min_value_node(node:Node):
             current = node
             while current.left_child != None:
@@ -223,7 +223,7 @@ class AVLTree:
         if node_children == 0:
 
             if node_parent != None:
-                # remove a referencia do No deletado no pai
+                # remove a referencia do No deletado No pai
                 if node_parent.left_child == node:
                     node_parent.left_child = None
                 else:
@@ -255,24 +255,20 @@ class AVLTree:
             child.parent = node_parent
 
         # CASO 3: No com dois filhos
-        # Parei aqui
-        # tem que descobrir pq essa caralha nao ta funcionando
         if node_children == 2:
 
             # get the inorder successor of the deleted node
             successor = min_value_node(node.right_child)
+            print(f'Sucessor: {successor.value}')
 
             # copy the inorder successor's value to the node formerly
             # holding the value we wished to delete
-            if isinstance(successor.value, int):
-                node.value = successor.value
-            else:
-                print('successor value not Int')
-                return
+            print(f'Cur node: {node.value}, recebe sucessor: {successor.value}')
+            node.value = successor.value
 
             # delete the inorder successor now that it's value was
             # copied into the other node
-            self.delete_node(successor.value)
+            self._delete_node(successor)
 
             # exit function so we don't call the _inspect_deletion twice
             return
@@ -312,7 +308,7 @@ class AVLTree:
             return None
 
     def _find(self, value:int, cur_node:Node):
-        print(f'entrou: valor:{value}, valor do no: {cur_node.value}')
+        print(f'entrou: valor:{value}, valor do No: {cur_node.value}')
 
         if value == cur_node.value:
             return cur_node
@@ -404,22 +400,14 @@ if __name__ == '__main__':
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(20)
+    new_tree.insert(4)
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(30)
+    new_tree.insert(7)
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(15)
-    new_tree.print_tree()
-    print(new_tree)
-
-    new_tree.delete_node(3)
-    new_tree.print_tree()
-    print(new_tree)
-
-    new_tree.delete_node(20)
+    new_tree.delete_node(5)
     new_tree.print_tree()
     print(new_tree)
