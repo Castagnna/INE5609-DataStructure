@@ -264,7 +264,7 @@ class AVLTree:
             node.value = successor.value
 
             # deleta o sucessor agora que o seu valor esta copiado no No "removido"
-            # o processo é recursivo
+            # o processo é recursivo e segue até que ele caia no caso de 0 ou 1 filho
             self._delete_node(successor)
 
             return
@@ -286,11 +286,16 @@ class AVLTree:
         right_height = self._get_height(cur_node.right_child)
 
         if abs(left_height - right_height) > 1:
-            node_y = self.taller_child(cur_node)
-            node_x = self.taller_child(node_y)
+            node_y = self._taller_child(cur_node)
+            node_x = self._taller_child(node_y)
             self._rebalance_node(cur_node, node_y, node_x)
 
         self._inspect_deletion(cur_node.parent)
+
+    def _taller_child(self, cur_node:Node) -> Node:
+        left = self._get_height(cur_node.left_child)
+        right = self._get_height(cur_node.right_child)
+        return cur_node.left_child if left >= right else cur_node.right_child
 
     def find(self, value:int):
         if isinstance(value, int):
@@ -324,9 +329,13 @@ class AVLTree:
             self._print_tree(self.root)
 
     def _print_tree(self, cur_node:Node):
+
+        max_height = self.root.height
+
         if cur_node != None:
             self._print_tree(cur_node.left_child)
-            print(f'{cur_node.value}, h = {cur_node.height}')
+            # sep = '     ' * (max_height - cur_node.height)
+            print(f'{cur_node.value}, h = {cur_node.height}') # | {sep}{cur_node.value}')
             self._print_tree(cur_node.right_child)
 
     def __repr__(self):
@@ -388,15 +397,7 @@ class AVLTree:
 if __name__ == '__main__':
     new_tree = AVLTree()
 
-    new_tree.insert(5)
-    new_tree.print_tree()
-    print(new_tree)
-
-    new_tree.insert(2)
-    new_tree.print_tree()
-    print(new_tree)
-
-    new_tree.insert(3)
+    new_tree.insert(10)
     new_tree.print_tree()
     print(new_tree)
 
@@ -404,23 +405,15 @@ if __name__ == '__main__':
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(7)
+    new_tree.insert(14)
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.delete_node(5)
+    new_tree.insert(1)
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(-1)
-    new_tree.print_tree()
-    print(new_tree)
-
-    new_tree.insert(8)
-    new_tree.print_tree()
-    print(new_tree)
-
-    new_tree.delete_node(3)
+    new_tree.insert(15)
     new_tree.print_tree()
     print(new_tree)
 
@@ -428,6 +421,18 @@ if __name__ == '__main__':
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(3)
+    new_tree.insert(12)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(11)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(13)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.delete_node(14)
     new_tree.print_tree()
     print(new_tree)
