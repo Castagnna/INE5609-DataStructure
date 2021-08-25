@@ -257,28 +257,24 @@ class AVLTree:
         # CASO 3: No com dois filhos
         if node_children == 2:
 
-            # get the inorder successor of the deleted node
+            # pega o valor que vai suceder o No que sera "removido"
             successor = min_value_node(node.right_child)
-            print(f'Sucessor: {successor.value}')
 
-            # copy the inorder successor's value to the node formerly
-            # holding the value we wished to delete
-            print(f'Cur node: {node.value}, recebe sucessor: {successor.value}')
+            # copia o valor do sucessor para o No que desejamos "remover"
             node.value = successor.value
 
-            # delete the inorder successor now that it's value was
-            # copied into the other node
+            # deleta o sucessor agora que o seu valor esta copiado no No "removido"
+            # o processo é recursivo
             self._delete_node(successor)
 
-            # exit function so we don't call the _inspect_deletion twice
             return
 
         if node_parent != None:
-            # fix the height of the parent of current node
+            # a nova altura do nó pai será: 1 + a maior altura dentre os seus filhos
             node_parent.height = 1 + max(self._get_height(node_parent.left_child), self._get_height(node_parent.right_child))
 
-            # begin to traverse back up the tree checking if there are
-            # any sections which now invalidate the AVL balance rules
+            # por fim, percorre de volta a árvore, verificando se há
+            # seções que agora invalidem as regras de equilíbrio AVL
             self._inspect_deletion(node_parent)
 
     def _inspect_deletion(self, cur_node:Node):
@@ -300,7 +296,7 @@ class AVLTree:
         if isinstance(value, int):
             pass
         else:
-            print(f'valor do find nao é Int: {value}')
+            print(f'find value not Int: {value}')
 
         if self.root != None:
             return self._find(value, self.root)
@@ -308,14 +304,18 @@ class AVLTree:
             return None
 
     def _find(self, value:int, cur_node:Node):
-        print(f'entrou: valor:{value}, valor do No: {cur_node.value}')
 
+        # se o valor for igual ao valor do No atual, retorna o No atual
         if value == cur_node.value:
             return cur_node
 
+        # se o valor for menor que o valor do No atual,
+        # e o filho esquerdo do No atual nao for nulo, continua a busca no filho esquerdo
         elif value < cur_node.value and cur_node.left_child != None:
             return self._find(value, cur_node.left_child)
-
+        
+        # se o valor for maior que o valor do No atual,
+        # e o filho direito do No atual nao for nulo, continua a busca no filho direito
         elif value > cur_node.value and cur_node.right_child != None:
             return self._find(value, cur_node.right_child)
 
@@ -409,5 +409,25 @@ if __name__ == '__main__':
     print(new_tree)
 
     new_tree.delete_node(5)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(-1)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(8)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.delete_node(3)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(6)
+    new_tree.print_tree()
+    print(new_tree)
+
+    new_tree.insert(3)
     new_tree.print_tree()
     print(new_tree)
