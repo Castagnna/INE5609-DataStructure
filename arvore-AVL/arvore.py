@@ -121,10 +121,10 @@ class AVLTree:
         # 1) guarda o pai de Z
         z_parent = node_z.parent
 
-        # 2) garante que o no Y é o filho direito de Z
+        # 2) cria um no Y que é o filho direito de Z
         node_y = node_z.right_child
 
-        # 3) Faz a arvore 2 auxiliar (tree 2) receber o filho esquerdo de Y
+        # 3) Cria um nó auxiliar T2 que recebe o filho esquerdo de Y
         node_t2 = node_y.left_child
 
         # 4) Faz filho esquerdo de Y receber o no Z
@@ -151,7 +151,7 @@ class AVLTree:
         elif node_y.parent.left_child == node_z:
             node_y.parent.left_child = node_y
 
-        # 10) Se não, o filho direito do pai de Y deve ser Y
+        # 11) Se não, o filho direito do pai de Y deve ser Y
         else:
             node_y.parent.right_child = node_y
 
