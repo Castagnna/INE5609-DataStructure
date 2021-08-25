@@ -276,8 +276,8 @@ class AVLTree:
 
     def _inspect_deletion(self, cur_node:Node):
 
-        # if cur_node == None:
-        #     return None
+        if cur_node == None:
+            return None
 
         left_height =self._get_height(cur_node.left_child)
         right_height=self._get_height(cur_node.right_child)
