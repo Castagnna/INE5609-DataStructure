@@ -2,7 +2,10 @@
 
 class Node:
     def __init__(self, value = None):
-        self.value = value
+        if isinstance(value, int):
+            self.value = value
+        else:
+            print('value not Int (2)')
         self.left_child = None
         self.right_child = None
         self.parent = None # aponta para o pai do No
@@ -180,7 +183,146 @@ class AVLTree:
 
         node_z.height = 1 + max(self._get_height(node_z.left_child), self._get_height(node_z.right_child))
         node_y.height = 1 + max(self._get_height(node_y.left_child), self._get_height(node_y.right_child))
-            
+
+    def delete_node(self, value:int):
+        if isinstance(value, int):
+            node = self.find(value)
+        else:
+            print(f'delete value not Int: {value}')
+        return self._delete_node(node)
+
+    def _delete_node(self, node:Node):
+        # previne quebra de codigo caso o No nao exista
+        if node == None or self.find(node.value) == None:
+            print("Node to be deleted not found in the tree!")
+            return None 
+
+        # retorna o elemento com menor valor a partir do no recebido (menor filho)
+        def min_value_node(node:Node):
+            current = node
+            while current.left_child != None:
+                current = current.left_child
+            return current
+
+        # retorna o numero de filhos de um No especifico (0, 1 ou 2)
+        def num_children(node:Node) -> int:
+            num_children = 0
+            if node.left_child != None:
+                num_children += 1
+            if node.right_child != None:
+                num_children += 1
+            return num_children
+
+        # cria uma variavel com pai do No atual
+        node_parent = node.parent
+
+        # cria uma variavel com numero de filhos do No atual
+        node_children = num_children(node)
+
+        # CASO 1: No sem filhos (folha)
+        if node_children == 0:
+
+            if node_parent != None:
+                # remove a referencia do No deletado no pai
+                if node_parent.left_child == node:
+                    node_parent.left_child = None
+                else:
+                    node_parent.right_child = None
+            else:
+                # se No nao tiver pai ele eh a raiz
+                # seta a raiz para None
+                self.root = None
+
+        # CASO 2: No com 1 filho
+        if node_children == 1:
+
+            # encontra o filho do No (verifica se eh left_child ou right_child)
+            if node.left_child != None:
+                child = node.left_child
+            else:
+                child = node.right_child
+
+            if node_parent!= None:
+                # passa o filho (child) do No deletado para o avo
+                if node_parent.left_child == node:
+                    node_parent.left_child = child
+                else:
+                    node_parent.right_child = child
+            else:
+                self.root = child
+
+            # altera o pai da child para seu avo
+            child.parent = node_parent
+
+        # CASO 3: No com dois filhos
+        # Parei aqui
+        # tem que descobrir pq essa caralha nao ta funcionando
+        if node_children == 2:
+
+            # get the inorder successor of the deleted node
+            successor = min_value_node(node.right_child)
+
+            # copy the inorder successor's value to the node formerly
+            # holding the value we wished to delete
+            if isinstance(successor.value, int):
+                node.value = successor.value
+            else:
+                print('successor value not Int')
+                return
+
+            # delete the inorder successor now that it's value was
+            # copied into the other node
+            self.delete_node(successor.value)
+
+            # exit function so we don't call the _inspect_deletion twice
+            return
+
+        if node_parent != None:
+            # fix the height of the parent of current node
+            node_parent.height = 1 + max(self._get_height(node_parent.left_child), self._get_height(node_parent.right_child))
+
+            # begin to traverse back up the tree checking if there are
+            # any sections which now invalidate the AVL balance rules
+            self._inspect_deletion(node_parent)
+
+    def _inspect_deletion(self, cur_node:Node):
+
+        if cur_node == None:
+            return None
+
+        left_height = self._get_height(cur_node.left_child)
+        right_height = self._get_height(cur_node.right_child)
+
+        if abs(left_height - right_height) > 1:
+            node_y = self.taller_child(cur_node)
+            node_x = self.taller_child(node_y)
+            self._rebalance_node(cur_node, node_y, node_x)
+
+        self._inspect_deletion(cur_node.parent)
+
+    def find(self, value:int):
+        if isinstance(value, int):
+            pass
+        else:
+            print(f'valor do find nao é Int: {value}')
+
+        if self.root != None:
+            return self._find(value, self.root)
+        else:
+            return None
+
+    def _find(self, value:int, cur_node:Node):
+        print(f'entrou: valor:{value}, valor do no: {cur_node.value}')
+
+        if value == cur_node.value:
+            return cur_node
+
+        elif value < cur_node.value and cur_node.left_child != None:
+            return self._find(value, cur_node.left_child)
+
+        elif value > cur_node.value and cur_node.right_child != None:
+            return self._find(value, cur_node.right_child)
+
     def print_tree(self):
         if self.root != None:
             self._print_tree(self.root)
@@ -190,131 +332,6 @@ class AVLTree:
             self._print_tree(cur_node.left_child)
             print(f'{cur_node.value}, h = {cur_node.height}')
             self._print_tree(cur_node.right_child)
-
-        # funcao publica que encontra o No desejado 
-    # e chama a funcao privada _delete_node passando o valor encontrado
-    def delete_node(self,value):
-	    return self._delete_node(self.find(value))
-
-    # funcao privada utilizada somente dentro da classe
-    def _delete_node(self,node):
-
-    	# previne quebra de codigo caso o No nao exista
-	    if node==None or self.find(node.value)==None:
-	    	print("Node to be deleted not found in the tree!")
-	    	return None 
-
-    # funcoes utilizadas dentro do metodo _delete_node
-
-	    # retorna o elemento com menor valor a partir do no recebido (menor filho)
-	    def min_value_node(node):
-	    	current=node
-	    	while current.left_child!=None:
-	    		current=current.left_child
-	    	return current
-
-	    # retorna o numero de filhos de um No especifico (0,1 ou 2)
-	    def num_children(node):
-	    	num_children=0
-	    	if node.left_child!=None: num_children+=1
-	    	if node.right_child!=None: num_children+=1
-	    	return num_children
-
-	    # cria uma variavel com pai do No atual
-	    node_parent=node.parent
-
-	    # cria uma variavel com numero de filhos do No atual
-	    node_children=num_children(node)
-
-	    # CASO 1: No sem filhos (folha)
-	    if node_children==0:
-
-	    	if node_parent!=None:
-	    		# remove a referencia do No deletado no pai
-	    		if node_parent.left_child==node:
-	    			node_parent.left_child=None
-	    		else:
-	    			node_parent.right_child=None
-	    	else:
-                # se No nao tiver pai ele eh a raiz
-                # seta a raiz para None
-	    		self.root=None
-
-	    # CASO 2: No com 1 filho
-	    if node_children==1:
-
-	    	# encontra o filho do No (verifica se eh left_child ou right_child)
-	    	if node.left_child!=None:
-	    		child=node.left_child
-	    	else:
-	    		child=node.right_child
-
-	    	if node_parent!=None:
-	    		# passa o filho (child) do No deletado para o avo
-	    		if node_parent.left_child==node:
-	    			node_parent.left_child=child
-	    		else:
-	    			node_parent.right_child=child
-	    	else:
-	    		self.root=child
-
-	    	# altera o pai da child para seu avo
-	    	child.parent=node_parent
-
-	    # CASO 3: No com dois filhos
-        #Parei aqui
-        # tem que descobrir pq essa caralha nao ta funcionando
-	    if node_children==2:
-
-	    	# get the inorder successor of the deleted node
-	    	successor=min_value_node(node.right_child)
-
-	    	# copy the inorder successor's value to the node formerly
-	    	# holding the value we wished to delete
-	    	node.value=successor.value
-
-	    	# delete the inorder successor now that it's value was
-	    	# copied into the other node
-	    	self.delete_node(successor)
-
-	    	# exit function so we don't call the _inspect_deletion twice
-	    	return
-
-	    if node_parent!=None:
-	    	# fix the height of the parent of current node
-	    	node_parent.height=1+max(self._get_height(node_parent.left_child),self._get_height(node_parent.right_child))
-
-	    	# begin to traverse back up the tree checking if there are
-	    	# any sections which now invalidate the AVL balance rules
-	    	self._inspect_deletion(node_parent)
-    
-    def _inspect_deletion(self,cur_node):
-	    if cur_node==None: return
-
-	    left_height =self._get_height(cur_node.left_child)
-	    right_height=self._get_height(cur_node.right_child)
-
-	    if abs(left_height-right_height)>1:
-		    node_y=self.taller_child(cur_node)
-		    node_x=self.taller_child(node_y)
-		    self._rebalance_node(cur_node,node_y,node_x)
-
-	    self._inspect_deletion(cur_node.parent)
-
-    def find(self,value):
-    	if self.root!=None:
-    		return self._find(value,self.root)
-    	else:
-    		return None
-
-    def _find(self,value,cur_node):
-        print('entrou:', value, cur_node.value)
-        if value==cur_node.value:
-        	return cur_node
-        elif value<cur_node.value and cur_node.left_child!=None:
-        	return self._find(value,cur_node.left_child)
-        elif value>cur_node.value and cur_node.right_child!=None:
-        	return self._find(value,cur_node.right_child)
 
     def __repr__(self):
         
@@ -399,14 +416,10 @@ if __name__ == '__main__':
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(4)
+    new_tree.delete_node(3)
     new_tree.print_tree()
     print(new_tree)
 
-    new_tree.insert(14)
-    new_tree.print_tree()
-    print(new_tree)
-
-    new_tree.insert(13)
+    new_tree.delete_node(20)
     new_tree.print_tree()
     print(new_tree)
